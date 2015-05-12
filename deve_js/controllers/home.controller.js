@@ -1,20 +1,72 @@
 'use strict';
+wqian.directive('file', function() {
+  return {
+    restrict: 'AE',
+    scope: {
+      file: '@'
+    },
+    link: function(scope, el, attrs){
+      el.bind('change', function(event){
+        var files = event.target.files;
+        var file = files[0];
+        scope.file = file;
+        scope.$parent.file = file;
+        scope.$apply();
+      });
+    }
+  };
+});
 
-wqian.controller('Home',['$scope', '$http', '$location', 
-	function($scope, $http, $location){
+wqian.controller('Home',['$scope', '$http', '$location', '$sce',
+	function($scope, $http, $location, $sce){
 		$scope.ifLog = false;
+		$scope.url = "";
+		var upload = function() {
+			/* jshint ignore:start */
+		  // Configure The S3 Object 
+		  AWS.config.update({ accessKeyId: amazon_credentials.aws_access_key_id, secretAccessKey: amazon_credentials.aws_secret_access_key });
+		  AWS.config.region = 'us-east-1';
+		  var bucket = new AWS.S3({ params: { Bucket: amazon_credentials.bucket } });
+		 
+		  if($scope.file) {
+		    var params = { Key: $scope.file.name, ContentType: $scope.file.type, Body: $scope.file, ServerSideEncryption: 'AES256' };
+		 
+		    bucket.putObject(params, function(err, data) {
+		      if(err) {
+		        // There Was An Error With Your S3 Config
+		        toastr.error(err.message);
+		        return false;
+		      }
+		      else {
+		        // Success!
+		        toastr.success('Upload Done');
+		      }
+		    })
+		  }
+		  else {
+		    // No File Selected
+		    toastr.error('No File Selected');
+		  }
+		  				/* jshint ignore:end */	
+		};
 		$scope.create = function(){
+			if($scope.file){
+				$scope.path = $scope.file.name;
+			}
 			var event = {
 				headline: $scope.headline,
 				notes: $scope.notes,
-				content: $scope.content
+				content: $scope.content,
+				path: $scope.path
 			};
 
 			$http.put('server/create.php', event, { 'Content-Type': 'application/json' }).success(function(data){
+				upload();
 				alert(data);
 				$scope.headline = '';
 				$scope.notes = '';
 				$scope.content = '';
+				$scope.path = '';
 			});
 		};
 		$scope.signin =function(){
@@ -78,5 +130,23 @@ wqian.controller('Home',['$scope', '$http', '$location',
 				$scope.req_content = '';
 			});
 		};
+
+		$scope.getFile = function(path){
+			console.log(path);
+		 	 AWS.config.update({ accessKeyId: amazon_credentials.aws_access_key_id, secretAccessKey: amazon_credentials.aws_secret_access_key });
+		 	 AWS.config.region = 'us-east-1';
+		 	 var s3 = new AWS.S3();
+			var params = {Bucket: amazon_credentials.bucket, Key: path};
+			s3.getSignedUrl('getObject', params, function (err, url) {
+				if(err){
+					toastr.error(err);
+				}
+				else{
+/*					toastr.success('');*/
+					$scope.url =   $sce.trustAsResourceUrl(url);
+				}
+			});
+		};
 	}
 ]);
+

@@ -11,7 +11,7 @@
 		$result = mysql_query($query, $link);
 		if(mysql_num_rows($result) > 0){
 			while($row = mysql_fetch_assoc($result)){
-				array_push($res,array('headline' => $row["headline"],'notes' => $row["notes"], 'content' => $row["content"], 'time' => $row["time"]) );
+				array_push($res,array('headline' => $row["headline"],'notes' => $row["notes"], 'content' => $row["content"], 'path' => $row['path'],'time' => $row["time"]) );
 			}
 		    echo json_encode($res);
 			mysql_close($link);			

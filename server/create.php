@@ -7,13 +7,14 @@
     $headline = $request->headline;
     $notes = $request->notes;
     $content = $request->content;
+    $path = $request->path;
 /*    $headline = 'test';
     $notes = 'test';
     $content = 'test';*/
 
 	if(mysql_select_db($dbname, $link)){
 		$res = array('ifExist' => true);
-		$query = "INSERT INTO event (headline,notes,content) VALUES ('$headline','$notes','$content')";
+		$query = "INSERT INTO event (headline,notes,content,path) VALUES ('$headline','$notes','$content', '$path')";
 		$result = mysql_query($query, $link);
 		if($result){
 			$res = 'successfully created';
