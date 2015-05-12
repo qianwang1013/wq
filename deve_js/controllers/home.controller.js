@@ -1,6 +1,6 @@
 'use strict';
 
-wqian.controller('Home',['$scope', '$http', '$location',
+wqian.controller('Home',['$scope', '$http', '$location', 
 	function($scope, $http, $location){
 		$scope.ifLog = false;
 		$scope.create = function(){
@@ -32,20 +32,22 @@ wqian.controller('Home',['$scope', '$http', '$location',
 			request.success(function (data) {
 				console.log(data);
 			   if(data.ifExist == true){
-			   		alert('success');
+			   		/* jshint ignore:start */
+			   		toastr.success('Successfully logged in as: ' + $scope.name);
+			   		/* jshint ignore:end */	
 					$location.path('/');
 					$scope.ifLog = true;
 					$scope.req_name = $scope.name;
 			   }
 			   else{
+			   		toastr.error('The username and password you entered are invalid \n Send in a request if this keeps happening');
 			   		$scope.ifLog = false;
-			   		alert('false');
 			   }
 			});	
 		};
 
 		$scope.signout = function(){
-			console.log('here');
+			toastr.success($scope.name + ' has just signed out');
 			$scope.ifLog = false;
 			$scope.name = '';
 			$scope.req_name = '';
@@ -56,6 +58,7 @@ wqian.controller('Home',['$scope', '$http', '$location',
 		$scope.find = function(){
 			$http.get('server/find.php').success(function(data){
 				$scope.events = data;
+				toastr.info('All events loaded');
 				console.log($scope.events);
 			});
 		};
@@ -69,7 +72,7 @@ wqian.controller('Home',['$scope', '$http', '$location',
 
 			$http.post('server/sendMail.php', email, { 'Content-Type': 'application/json' }).success(function(data){
 
-				alert(data);
+				toastr.info(data);
 				$scope.req_name = '';
 				$scope.req_email = '';
 				$scope.req_content = '';

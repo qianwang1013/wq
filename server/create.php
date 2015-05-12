@@ -1,5 +1,6 @@
  <?php 
  	require_once('link.php');
+	$dbname = 'event';
 	
 	$postdata = file_get_contents("php://input");
 	$request = json_decode($postdata);

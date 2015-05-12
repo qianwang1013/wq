@@ -1,14 +1,7 @@
  <?php 
-    $server = 'localhost';
-	$user = 'root';
-	$pass = '';
+	require_once('link.php');
 	$dbname = 'event';
 
-	$link = mysql_connect($server, $user,$pass); 
-	if (!$link) { 
-	    die('Could not connect: ' . mysql_error()); 
-	} 
-	
 /*    $password = 'mfarjan1';
     $username = 'admin';*/
 
