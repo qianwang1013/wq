@@ -16,7 +16,7 @@
 	<![endif]-->
 </head>
 
-<body>
+<body data-ng-controller = "Home">
 
 	<div class = "top">
 	</div>
@@ -24,23 +24,139 @@
 	<div class = "nav">
 		<ul class = "list-inline row hvr-float">
 			<li class = "col-xs-offset-9 hvr-underline-from-center"><a href = "#request" >Request</li>
-			<li class = "col-xs-offset-0 hvr-underline-from-center"><a href = "">
+			<li class = "col-xs-offset-0 hvr-underline-from-center" data-ng-show = "ifLog == false"><a data-toggle = "modal" data-target = "#signInModal">
 				Sign in
 			</a></li>
+			<li class = "col-xs-offset-0 hvr-underline-from-center" data-ng-show ="ifLog == true">
+				<a data-toggle = "modal" data-target = "#create">
+					create
+				</a>
+			</li>
+			<li class = "col-xs-offset-0 hvr-underline-from-center" data-ng-show ="ifLog == true">
+				<a href = "" data-ng-click = "signout()">
+					Sign out
+				</a>
+			</li>
 		</ul>
     </div>
 	<!--Application JavaScript Files-->
-	<div class = "content">
-		<div class = "event">
-			What say yo			
+	<div class = "content" data-ng-init = "find()">
+		<div class = "event" data-ng-repeat = "event in events | orderBy :'-time' : reverse">
+			<div class = "headline">
+				<h2>{{event.headline}}</h2>
+			</div>
+			<div class = "notes">
+				{{event.notes}}
+			</div>
+			<div class = "content">
+				{{event.content}}
+			</div>
 			<div class = "time">
-				<p class = "wrapper">today</p>
+				<p class = "wrapper">{{event.time}}</p>
 			</div>
 			<div class = "hr"></div>
 		</div>
 	</div>
+
+				<fieldset id = "request" class = "row request">
+	                <div class="form-group">
+	                    <label class="control-label" for="req_name">Name</label>
+	                    <div class="controls">
+	                        <input type="text" data-ng-model="req_name" name="req_name" id="req_name" class="form-control" placeholder="Name" required />
+	                    </div>
+	                </div>
+	                <div class="form-group">
+	                    <label class="control-label" for="req_email">Email</label>
+	                    <div class="controls">
+	                        <input type="text" data-ng-model="req_email" name="req_email" id="req_email" class="form-control" placeholder="Email" required />
+	                    </div>
+	                </div>
+					<label class="control-label" for="req_content">Reason for request</label>
+					<div class="controls">
+						<div>
+							<textarea data-ng-model="req_content" name="req_content"  id="req_content" class="form-control" cols="30" rows="10" placeholder="Your content"></textarea>
+						</div>
+					</div>	
+					<div class = "controls">
+					<button type="button" class="btn btn-warning" data-ng-click = "request()">Request</button>
+	            	</div>
+	            </fieldset>	 
+<!-- Sign in modal -->
+	<div class="modal fade" id="signInModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title" id="myModalLabel">Sign in</h4>
+	      </div>
+	      <div class="modal-body">
+	           <fieldset>
+	                <div class="form-group">
+	                    <label class="control-label" for="name">Username</label>
+	                    <div class="controls">
+	                        <input type="text" data-ng-model="name" name="name" id="name" class="form-control" placeholder="Name" required />
+	                    </div>
+	                </div>
+	                <div class="form-group">
+	                    <label class="control-label" for="password">Password</label>
+	                    <div class="controls">
+	                        <input type="text" data-ng-model="pass" name="pass" id="pass" class="form-control" placeholder="Password" required />
+	                    </div>
+	                </div>               
+	            </fieldset>	      	
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">Back</button>
+	        <button type="button" class="btn btn-primary" data-ng-click = "signin()" data-ng-show = "ifLog == false">Sign in</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+
+<!-- Create up modal -->
+	<div class="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title" id="myModalLabel">Create</h4>
+	      </div>
+	      <div class="modal-body">
+	           <fieldset>
+	                <div class="form-group">
+	                    <label class="control-label" for="headline">Headline</label>
+	                    <div class="controls">
+	                        <input type="text" data-ng-model="headline" name="headline" id="headline" class="form-control" placeholder="Name" required />
+	                    </div>
+	                </div>
+	                <div class="form-group">
+	                    <label class="control-label" for="password">Notes</label>
+	                    <div class="controls">
+	                        <input type="text" data-ng-model="notes" name="notes" id="notes" class="form-control" placeholder="Notes" required />
+	                    </div>
+	                </div>  
+					<label class="control-label" for="content">content</label>
+					<div class="controls">
+						<div>
+							<textarea data-ng-model="content" name="content"  id="content" class="form-control" cols="30" rows="10" placeholder="Your content"></textarea>
+						</div>
+					</div>	             
+	            </fieldset>	      	
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">Back</button>
+	        <button type="button" class="btn btn-primary" data-ng-click = "create()">Create</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+
 	<script src="deve_js/angular.js"></script>
+	<script src="deve_js/angular-route.js"></script>
+	<script src = "deve_js/jquery.min.js"></script>
+	<script src = "deve_js/bootstrap.min.js"></script>
 	<script src = "deve_js/application.js"></script>
 	<script src = "deve_js/controllers/home.controller.js"></script>
+	<script src = "deve_js/otherJs/modal.js"></script>
 </body>
 </html>
