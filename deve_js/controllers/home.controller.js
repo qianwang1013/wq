@@ -20,7 +20,8 @@ wqian.directive('file', function() {
 wqian.controller('Home',['$scope', '$http', '$location', '$sce',
 	function($scope, $http, $location, $sce){
 		$scope.ifLog = false;
-		$scope.url = "";
+		$scope.url = [];
+		$scope.path_type = '';	
 		var upload = function() {
 			/* jshint ignore:start */
 		  // Configure The S3 Object 
@@ -52,16 +53,34 @@ wqian.controller('Home',['$scope', '$http', '$location', '$sce',
 		$scope.create = function(){
 			if($scope.file){
 				$scope.path = $scope.file.name;
+			}else{
+				$scope.path = '';
 			}
-			var event = {
-				headline: $scope.headline,
-				notes: $scope.notes,
-				content: $scope.content,
-				path: $scope.path
-			};
 
-			$http.put('server/create.php', event, { 'Content-Type': 'application/json' }).success(function(data){
-				upload();
+			var request = $http({
+			    method: 'post',
+			    url: 'server/create.php',
+			    data: {
+					headline: $scope.headline,
+					notes: $scope.notes,
+					content: $scope.content,
+					path: $scope.path
+			    },
+			    headers: { 'Content-Type': 'application/json' }
+			});
+
+			
+			request.success(function(data){
+				if($scope.file){
+					toastr.info('Starting uploading');
+					upload();				
+					toastr.success('Finish uploading');
+					$scope.file = null;
+				}
+				else{
+					toastr.info('No file Selected');
+				}
+
 				alert(data);
 				$scope.headline = '';
 				$scope.notes = '';
@@ -116,23 +135,25 @@ wqian.controller('Home',['$scope', '$http', '$location', '$sce',
 		};
 
 		$scope.request = function(){
-			var email = {
-				req_name: $scope.req_name,
-				req_email: $scope.req_email,
-				req_content: $scope.req_content
-			};
 
-			$http.post('server/sendMail.php', email, { 'Content-Type': 'application/json' }).success(function(data){
+			var request = $http({
+			    method: 'post',
+			    url: 'server/sendMail.php',
+			    data: {
+					name: $scope.name,
+					message: $scope.req_content
+			    },
+			    headers: { 'Content-Type': 'application/json' }
+			});
+
+			request.success(function(data){
 
 				toastr.info(data);
-				$scope.req_name = '';
-				$scope.req_email = '';
 				$scope.req_content = '';
 			});
 		};
 
 		$scope.getFile = function(path){
-			console.log(path);
 		 	 AWS.config.update({ accessKeyId: amazon_credentials.aws_access_key_id, secretAccessKey: amazon_credentials.aws_secret_access_key });
 		 	 AWS.config.region = 'us-east-1';
 		 	 var s3 = new AWS.S3();
@@ -143,10 +164,70 @@ wqian.controller('Home',['$scope', '$http', '$location', '$sce',
 				}
 				else{
 /*					toastr.success('');*/
-					$scope.url =   $sce.trustAsResourceUrl(url);
+					console.log('url: ' + url);
+					var name = path.substring(0, path.lastIndexOf('.'));
+/*					$scope.url = $sce.trustAsResourceUrl(url);
+					console.log('sce: ' + $scope.url);*/
+					$scope.url[path] = {
+						url: $sce.trustAsResourceUrl(url)
+					};
+					$scope.path_type = getType(path);
+					console.log($scope.url);
+					toastr.success($scope.path_type +  ' loaded');
 				}
 			});
 		};
+
+		$scope.leaveMessage = function(){
+
+			var request = $http({
+			    method: 'post',
+			    url: 'server/leaveMessage.php',
+			    data: {
+					name: $scope.name,
+					message: $scope.mess_content
+			    },
+			    headers: { 'Content-Type': 'application/json' }
+			});
+
+			request.success(function(data){
+				toastr.success(data);
+				$scope.mess_content = '';
+			});
+		};
+
+		$scope.getMessage = function(){
+			$http.get('server/getMessage.php').success(function(data){
+				$scope.message = data;
+				console.log($scope.message[0].name);
+				if($scope.message[0].name == null){
+					$scope.noMessage = true;
+				}else{
+					$scope.noMessage = false;					
+				}
+			});
+		};
+
+		var getType = function(path){
+			console.log('path: ' + path);
+	        var ext = path.substring(path.lastIndexOf('.'), path.length);
+			var path_type = '';
+			switch(ext){
+	           case '.mp4':
+      		   case '.ogg':
+               case '.webm':
+             		path_type = 'video';
+             		break;
+               case '.jpg':
+               case '.png':
+               		path_type = 'img';
+               		break;
+               default:
+               		path_type = '';		
+			}
+			console.log('path_type: ' + path_type);
+			return path_type;
+		}
 	}
 ]);
 

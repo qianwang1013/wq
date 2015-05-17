@@ -1,9 +1,8 @@
  <?php 
- 	require_once('link.php');
+ 	require('link.php');
 	$dbname = 'event';
 	
-	$postdata = file_get_contents("php://input");
-	$request = json_decode($postdata);
+
     $headline = $request->headline;
     $notes = $request->notes;
     $content = $request->content;
@@ -11,23 +10,27 @@
 /*    $headline = 'test';
     $notes = 'test';
     $content = 'test';*/
-
-	if(mysql_select_db($dbname, $link)){
-		$res = array('ifExist' => true);
-		$query = "INSERT INTO event (headline,notes,content,path) VALUES ('$headline','$notes','$content', '$path')";
-		$result = mysql_query($query, $link);
-		if($result){
-			$res = 'successfully created';
-		    echo json_encode($result);		
-			mysql_close($link);
+    if($request){
+	 	if(mysql_select_db($dbname, $link)){
+			$query = "INSERT INTO event (headline,notes,content,path) VALUES ('$headline','$notes','$content', '$path')";
+			$result = mysql_query($query, $link);
+			if($result){
+				$res = 'successfully created';
+			    echo json_encode($result);		
+				mysql_close($link);
+			}else{
+				die('Error: ' . mysql_error());
+				mysql_close($link);			
+			}
 		}else{
 			die('Error: ' . mysql_error());
-			mysql_close($link);			
-		}
-	}else{
-		die('Error: ' . mysql_error());
-		mysql_close($link);	
-	}
+			mysql_close($link);	
+		}   	
+    }
+    else{
+    	echo json_encode('No json object input');
+    }
+
 
 
 ?>

@@ -1,7 +1,6 @@
 <?php
-    require_once('api.php');
-    $postdata = file_get_contents("php://input");
-    $request = json_decode($postdata);
+    require('api.php');
+    
     $name = $request->req_name;
     $email = $request->req_email;
     $content = $request->req_content;

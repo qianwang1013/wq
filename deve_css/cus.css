@@ -7,13 +7,25 @@
 }
 /*Nav*/
 .nav{
+	width: 100%;
+	height: auto;
+	display: block;
+	-webkit-transition: all 0.5s ease-in;
+	-moz-transition: all 0.5s ease-in;
+	-o-transition: all 0.5s ease-in;
+	transition: all 0.5s ease-in;
 }
+
 
 .nav ul{
 	display:block;
 	margin-right:auto;
 	margin-left:auto;
 	height: auto;
+	-webkit-transition: all 0.5s ease-in;
+	-moz-transition: all 0.5s ease-in;
+	-o-transition: all 0.5s ease-in;
+	transition: all 0.5s ease-in;
 
 }
 
@@ -22,6 +34,10 @@
 	border-radius: 3px;
 	font-size:20px;
 	padding:5px;
+	-webkit-transition: all 0.5s ease-in;
+	-moz-transition: all 0.5s ease-in;
+	-o-transition: all 0.5s ease-in;
+	transition: all 0.5s ease-in;
 }
 
 .nav li:hover{
@@ -41,6 +57,7 @@
 	margin-top:-10px;
 	min-height:550px;
 	width:100%;
+	display:block;
 }
 
 /*Event*/
@@ -49,8 +66,10 @@
 	margin-left:auto;
 	margin-right:auto;
 	width:581px;
-	height:217px;
+	height: auto;
 	font-size: 25px;
+	display: block;
+
 } 
 .event .headline{
 	font-family: "jaf-bernino-sans","Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Verdana,sans-serif;
@@ -67,6 +86,8 @@
 	text-rendering: optimizelegibility;
 	font-feature-settings: "liga";
 	color:rgba(0, 0, 0, 0.6);
+	display: block;
+	height: auto;
 }
 
 .event .content{
@@ -77,11 +98,15 @@
 	text-rendering: optimizelegibility;
 	font-feature-settings: "liga";
 	font-size:20px;
+	display: block;
+	height: auto;
 }
 /*Event Time*/
 .event .time{
 	text-align: center;
 	margin-top: 20px;
+	display: block;
+	height: auto;
 }
 
 .event .time p{
@@ -91,13 +116,15 @@
 	color:rgba(0,0,0,0.8);	
 	width:auto;
 }
-.event .hr {
+.hr {
+	margin-left:auto;
+	margin-right:auto;
+	width:581px;
    display: block;
    position: relative;
    padding: 0;
    margin: 8px auto;
    height: 0;
-   width: 100%;
    max-height: 0;
    font-size: 1px;
    line-height: 0;
@@ -109,10 +136,82 @@
 
 /*request*/
 .request{
-	top: 500px;
+	margin-top: 100px;
 	margin-left:auto;
 	margin-right:auto;
 	width:581px;
 	height:auto;
 	margin-bottom: 50px;
+}
+
+/*Sticky*/
+.nav.sticky{
+	width: 100%;
+	height: auto;
+	display: block;
+	position:fixed;
+	top:0px;
+}
+
+/* boxies */
+.box{
+	position:relative;
+	margin-left:auto;
+	margin-right:auto;
+	width: 100%;
+	height: 200px;
+
+}
+
+.boxies{
+	position:relative;
+	margin:0;
+	width:20%;
+	background: white;
+	height: 200px;
+}
+
+/* Message Board */
+.messageBoard{
+	margin-left:auto;
+	margin-right:auto;
+	width:581px;
+	height:auto;
+	background:#c7D0D5;
+	margin-top: 50px;
+	margin-bottom: 50px;
+	border-radius: 5px;
+	padding-bottom:20px;
+}
+
+.messageBoard h3{
+	font-family: "jaf-bernino-sans","Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Verdana,sans-serif;
+	letter-spacing: -0.02em;
+	font-weight: 700;
+	font-style: normal;
+	margin-left:10px;
+}
+
+.message{
+	display:block;
+	margin:10px;
+}
+
+.message:hover{
+	background-color:#93B1C6;
+	border-radius:5px;
+}
+.message .name{
+	font-weight: bold;
+	text-align: center;
+	text-transform: uppercase;
+}
+.message .message{
+	text-transform: capitalize;
+	font-size:25px;
+}
+.message .time{
+	font-style: italic;
+	font-size: 15px;
+	color:rgba(0,0,0,0.6);	
 }
